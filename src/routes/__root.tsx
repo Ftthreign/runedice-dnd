@@ -1,43 +1,94 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import AppHeader from '../components/layout/AppHeader'
-import { AppStateProvider } from '../features/app-state'
+import * as React from "react";
+import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import AppHeader from "../components/layout/AppHeader";
+import { AppStateProvider } from "../features/app-state";
 
-import appCss from '../styles.css?url'
+import appCss from "../styles.css?url";
+
+const LazyDevtools = React.lazy(() =>
+  Promise.all([
+    import("@tanstack/react-devtools"),
+    import("@tanstack/react-router-devtools"),
+  ]).then(([devtools, routerDevtools]) => ({
+    default: () => (
+      <devtools.TanStackDevtools
+        config={{
+          position: "bottom-right",
+        }}
+        plugins={[
+          {
+            name: "Tanstack Router",
+            render: <routerDevtools.TanStackRouterDevtoolsPanel />,
+          },
+        ]}
+      />
+    ),
+  }))
+);
+
+function ClientDevtools() {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !import.meta.env.DEV) {
+    return null;
+  }
+
+  return (
+    <React.Suspense fallback={null}>
+      <LazyDevtools />
+    </React.Suspense>
+  );
+}
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
-        charSet: 'utf-8',
+        charSet: "utf-8",
       },
       {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1, maximum-scale=5',
+        name: "viewport",
+        content: "width=device-width, initial-scale=1, maximum-scale=5",
       },
       {
-        title: 'RuneDice — Roll Your Fate',
+        title: "RuneDice — Roll Your Fate",
       },
       {
-        name: 'description',
+        name: "description",
         content:
-          'Arcane minimalist D&D dice rolling companion with sessions, players, and cryptosafe fairness.',
+          "Arcane minimalist D&D dice rolling companion with sessions, players, and cryptosafe fairness.",
       },
       {
-        name: 'theme-color',
-        content: '#290044',
+        name: "theme-color",
+        content: "#290044",
       },
     ],
     links: [
       {
-        rel: 'stylesheet',
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,900&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap",
+      },
+      {
+        rel: "stylesheet",
         href: appCss,
       },
     ],
   }),
   shellComponent: RootDocument,
-})
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -45,24 +96,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-screen bg-[#290044] text-[#fff8e8] font-sans antialiased selection:bg-[#8a2a78] selection:text-[#fff8e8]">
+      <body className="min-h-screen bg-canvas-base text-text-primary font-sans antialiased selection:bg-mystic-magenta selection:text-text-primary">
         <AppStateProvider>
           <AppHeader />
           <main className="min-h-[calc(100vh-65px)]">{children}</main>
         </AppStateProvider>
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        <ClientDevtools />
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

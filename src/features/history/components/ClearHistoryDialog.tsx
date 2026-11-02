@@ -60,21 +60,21 @@ export function ClearHistoryDialog({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={springs.gentle}
-            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#ff5a7e]/60 bg-[#2d0812] p-6 text-[#fff8e8] shadow-[0_12px_36px_-4px_rgba(142,25,52,0.8)]"
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#ff5a7e]/60 bg-[#2d0812] p-6 text-text-primary shadow-[0_12px_36px_-4px_rgba(142,25,52,0.8)]"
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={onClose}
               aria-label="Cancel clear log"
-              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-lg text-[#ffb4ab] transition-colors hover:bg-[#8e1934]/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5a7e] cursor-pointer"
+              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-lg text-[#ffb4ab] transition-colors hover:bg-fumble-crimson/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff5a7e] cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
 
             {/* Header */}
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#ff5a7e] bg-[#8e1934]/80 shadow-[0_0_16px_rgba(142,25,52,0.5)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#ff5a7e] bg-fumble-crimson/80 shadow-[0_0_16px_rgba(142,25,52,0.5)]">
                 <AlertCircle className="h-6 w-6 text-[#ffdad6]" />
               </div>
               <div>
@@ -96,7 +96,7 @@ export function ClearHistoryDialog({
               className="mt-4 font-sans text-xs text-[#ffdad6]/90 leading-relaxed"
             >
               Are you sure you want to purge all recorded roll logs for{' '}
-              <strong className="font-mono text-[#eee3b0]">"{sessionName}"</strong>?
+              <strong className="font-mono text-parchment-gold">"{sessionName}"</strong>?
               Enrolled party members and campaign settings will remain untouched.
             </p>
 

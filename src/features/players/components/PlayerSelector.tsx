@@ -20,13 +20,13 @@ export function PlayerSelector({ onOpenPlayerManager }: PlayerSelectorProps) {
   return (
     <div className="w-full">
       <div className="mb-2 flex items-center justify-between">
-        <label className="font-mono text-xs font-semibold tracking-wider text-[#c7b5d1] uppercase">
+        <label className="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">
           Active Turn (Player)
         </label>
         <button
           type="button"
           onClick={onOpenPlayerManager}
-          className="font-mono text-[11px] text-[#eee3b0] hover:text-[#fff8e8] underline-offset-2 hover:underline cursor-pointer"
+          className="font-mono text-[11px] text-parchment-gold hover:text-text-primary underline-offset-2 hover:underline cursor-pointer"
         >
           Manage Party ({sessionPlayers.length})
         </button>
@@ -46,18 +46,18 @@ export function PlayerSelector({ onOpenPlayerManager }: PlayerSelectorProps) {
               aria-pressed={isActive}
               className={cn(
                 'group flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition-all select-none flex-shrink-0 cursor-pointer',
-                'min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78]',
+                'min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta',
                 isActive
-                  ? 'border-[#eee3b0] bg-[#500071] text-[#eee3b0] shadow-[0_0_16px_rgba(238,227,176,0.3)]'
-                  : 'border-[#70418a]/50 bg-[#200033]/80 text-[#c7b5d1] hover:border-[#8a2a78] hover:bg-[#35104a]/70 hover:text-[#fff8e8]'
+                  ? 'border-parchment-gold bg-surface-elevated text-parchment-gold shadow-[0_0_16px_rgba(238,227,176,0.3)]'
+                  : 'border-subtle-border/50 bg-inset-dark/80 text-text-secondary hover:border-mystic-magenta hover:bg-surface-muted/70 hover:text-text-primary'
               )}
             >
               <div
                 className={cn(
                   'flex h-5 w-5 items-center justify-center rounded-full font-mono text-[10px] font-bold',
                   isActive
-                    ? 'bg-[#eee3b0] text-[#200033]'
-                    : 'bg-[#35104a] text-[#c7b5d1]'
+                    ? 'bg-parchment-gold text-inset-dark'
+                    : 'bg-surface-muted text-text-secondary'
                 )}
               >
                 {initial}
@@ -74,7 +74,7 @@ export function PlayerSelector({ onOpenPlayerManager }: PlayerSelectorProps) {
           type="button"
           onClick={onOpenPlayerManager}
           aria-label="Add new adventurer"
-          className="flex items-center gap-1.5 rounded-xl border border-dashed border-[#70418a]/70 bg-[#200033]/50 px-3 py-2 text-xs font-mono text-[#c7b5d1] transition-all hover:border-[#eee3b0] hover:text-[#eee3b0] hover:bg-[#35104a]/50 flex-shrink-0 min-h-[42px] cursor-pointer"
+          className="flex items-center gap-1.5 rounded-xl border border-dashed border-subtle-border/70 bg-inset-dark/50 px-3 py-2 text-xs font-mono text-text-secondary transition-all hover:border-parchment-gold hover:text-parchment-gold hover:bg-surface-muted/50 flex-shrink-0 min-h-[42px] cursor-pointer"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Add Hero</span>
@@ -82,8 +82,8 @@ export function PlayerSelector({ onOpenPlayerManager }: PlayerSelectorProps) {
       </div>
 
       {sessionPlayers.length === 0 && (
-        <div className="rounded-lg border border-[#70418a]/30 bg-[#200033]/60 p-2.5 text-center text-xs text-[#c7b5d1]">
-          <User className="inline h-3.5 w-3.5 mr-1 text-[#eee3b0]" />
+        <div className="rounded-lg border border-subtle-border/30 bg-inset-dark/60 p-2.5 text-center text-xs text-text-secondary">
+          <User className="inline h-3.5 w-3.5 mr-1 text-parchment-gold" />
           No party members enrolled yet. Click &quot;Add Hero&quot; to begin.
         </div>
       )}

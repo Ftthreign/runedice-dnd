@@ -64,22 +64,22 @@ export function SessionDrawerMobile({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '100%', opacity: 0 }}
             transition={springs.gentle}
-            className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-[#70418a] bg-[#290044] p-5 text-[#fff8e8] shadow-[0_16px_40px_rgba(0,0,0,0.9)]"
+            className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-subtle-border bg-canvas-base p-5 text-text-primary shadow-[0_16px_40px_rgba(0,0,0,0.9)]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#70418a]/40 pb-3">
+            <div className="flex items-center justify-between border-b border-subtle-border/40 pb-3">
               <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#70418a] bg-[#500071]">
-                  <Layers className="h-5 w-5 text-[#eee3b0]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-subtle-border bg-surface-elevated">
+                  <Layers className="h-5 w-5 text-parchment-gold" />
                 </div>
                 <div>
                   <h2
                     id="session-drawer-title"
-                    className="font-serif text-lg font-bold text-[#fff8e8]"
+                    className="font-serif text-lg font-bold text-text-primary"
                   >
                     Campaign Chambers
                   </h2>
-                  <span className="font-mono text-[10px] text-[#c7b5d1]">
+                  <span className="font-mono text-[10px] text-text-secondary">
                     Manage active campaigns & roll histories
                   </span>
                 </div>
@@ -89,7 +89,7 @@ export function SessionDrawerMobile({
                 type="button"
                 onClick={onClose}
                 aria-label="Close session menu"
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#c7b5d1] transition-colors hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] cursor-pointer"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -114,7 +114,7 @@ export function SessionDrawerMobile({
             {/* Session List */}
             <div className="flex-1 overflow-y-auto space-y-2 py-1 pr-1">
               {state.sessions.length === 0 ? (
-                <div className="py-8 text-center text-xs text-[#c7b5d1]">
+                <div className="py-8 text-center text-xs text-text-secondary">
                   No sessions exist. Click above to inscribe one.
                 </div>
               ) : (
@@ -133,8 +133,8 @@ export function SessionDrawerMobile({
                       className={cn(
                         'group flex items-center justify-between gap-3 rounded-xl border p-3 transition-all',
                         isActive
-                          ? 'border-[#eee3b0] bg-[#500071] shadow-[0_0_16px_rgba(238,227,176,0.25)]'
-                          : 'border-[#70418a]/40 bg-[#200033]/80 hover:border-[#8a2a78] hover:bg-[#35104a]/60'
+                          ? 'border-parchment-gold bg-surface-elevated shadow-[0_0_16px_rgba(238,227,176,0.25)]'
+                          : 'border-subtle-border/40 bg-inset-dark/80 hover:border-mystic-magenta hover:bg-surface-muted/60'
                       )}
                     >
                       {/* Left: Click to Switch */}
@@ -150,8 +150,8 @@ export function SessionDrawerMobile({
                           className={cn(
                             'flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border',
                             isActive
-                              ? 'border-[#eee3b0] bg-[#eee3b0] text-[#200033]'
-                              : 'border-[#70418a] text-transparent'
+                              ? 'border-parchment-gold bg-parchment-gold text-inset-dark'
+                              : 'border-subtle-border text-transparent'
                           )}
                         >
                           <Check className="h-3.5 w-3.5 stroke-[3]" />
@@ -160,12 +160,12 @@ export function SessionDrawerMobile({
                           <p
                             className={cn(
                               'truncate font-serif text-sm font-bold',
-                              isActive ? 'text-[#eee3b0]' : 'text-[#fff8e8]'
+                              isActive ? 'text-parchment-gold' : 'text-text-primary'
                             )}
                           >
                             {session.name}
                           </p>
-                          <div className="flex items-center gap-2 font-mono text-[10px] text-[#c7b5d1]">
+                          <div className="flex items-center gap-2 font-mono text-[10px] text-text-secondary">
                             <span>{playerCount} Players</span>
                             <span>•</span>
                             <span>{rollCount} Rolls</span>
@@ -182,7 +182,7 @@ export function SessionDrawerMobile({
                             onOpenRenameModal(session.id, session.name)
                           }}
                           aria-label={`Rename ${session.name}`}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-[#c7b5d1] hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#8a2a78] cursor-pointer"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-mystic-magenta cursor-pointer"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </button>
@@ -210,8 +210,8 @@ export function SessionDrawerMobile({
                               className={cn(
                                 'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
                                 isOnlySession
-                                  ? 'text-[#70418a]/40 cursor-not-allowed opacity-40'
-                                  : 'text-[#ffb4ab] hover:bg-[#8e1934]/60 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5a7e] cursor-pointer'
+                                  ? 'text-subtle-border/40 cursor-not-allowed opacity-40'
+                                  : 'text-[#ffb4ab] hover:bg-fumble-crimson/60 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5a7e] cursor-pointer'
                               )}
                             >
                               <Trash2 className="h-3.5 w-3.5" />

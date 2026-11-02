@@ -15,6 +15,10 @@ import { useAppState } from "../../app-state/AppStateContext";
 import { SessionModal } from "../../sessions/components/SessionModal";
 import { PlayerSelector } from "../../players";
 import { RollHistoryList } from "../../history";
+import {
+  sendRollToDiscord,
+  isDiscordWebhookConfigured,
+} from "../../../lib/discord/discord-webhook";
 
 interface DiceWorkspaceProps {
   onRollComplete?: (result: DiceRollResult) => void;
@@ -195,6 +199,16 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
         if (onRollComplete) {
           onRollComplete(result);
         }
+
+        // Automatically broadcast roll to Discord webhook if configured
+        if (isDiscordWebhookConfigured()) {
+          sendRollToDiscord(result, {
+            playerName: activePlayer?.name,
+            sessionName: activeSession?.name,
+          }).catch((err) => {
+            console.warn("[RuneDice] Discord auto-broadcast error:", err);
+          });
+        }
       } catch (err) {
         setIsRolling(false);
       }
@@ -229,6 +243,16 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
         if (onRollComplete) {
           onRollComplete(result);
         }
+
+        // Automatically broadcast reroll to Discord webhook if configured
+        if (isDiscordWebhookConfigured()) {
+          sendRollToDiscord(result, {
+            playerName: activePlayer?.name,
+            sessionName: activeSession?.name,
+          }).catch((err) => {
+            console.warn("[RuneDice] Discord auto-broadcast error:", err);
+          });
+        }
       } catch {
         setIsRolling(false);
       }
@@ -241,14 +265,14 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
   if (state.sessions.length === 0) {
     return (
       <div className="mx-auto max-w-xl py-12 px-4 text-center">
-        <div className="rounded-2xl border border-[#70418a] bg-[#500071]/80 p-8 shadow-[0_12px_32px_rgba(12,0,20,0.85)]">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-[#eee3b0] bg-[#200033] shadow-lg">
-            <Dices className="h-8 w-8 text-[#eee3b0]" />
+        <div className="rounded-2xl border border-subtle-border bg-surface-elevated/80 p-8 shadow-[0_12px_32px_rgba(12,0,20,0.85)]">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-parchment-gold bg-inset-dark shadow-lg">
+            <Dices className="h-8 w-8 text-parchment-gold" />
           </div>
-          <h2 className="mt-5 font-serif text-2xl font-bold text-[#fff8e8]">
+          <h2 className="mt-5 font-serif text-2xl font-bold text-text-primary">
             No Campaign Inscribed
           </h2>
-          <p className="mt-2 text-sm text-[#c7b5d1] leading-relaxed">
+          <p className="mt-2 text-sm text-text-secondary leading-relaxed">
             Every adventurer requires a campaign chamber to record rolls, track
             party turns, and weave their tale.
           </p>
@@ -318,14 +342,14 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
 
           {/* Combined Modifier Clarity (PRD 4.3) */}
           {formulaModifier !== 0 && standaloneModifier !== 0 && (
-            <div className="flex items-center gap-2 rounded-lg border border-[#70418a]/60 bg-[#35104a]/70 px-3 py-1.5 font-mono text-xs text-[#eee3b0]">
+            <div className="flex items-center gap-2 rounded-lg border border-subtle-border/60 bg-surface-muted/70 px-3 py-1.5 font-mono text-xs text-parchment-gold">
               <span className="font-bold">Combined Modifier:</span>
               <span className="font-bold">
                 {combinedModifier >= 0
                   ? `+${combinedModifier}`
                   : combinedModifier}
               </span>
-              <span className="text-[10px] text-[#c7b5d1]">
+              <span className="text-[10px] text-text-secondary">
                 (
                 {formulaModifier >= 0 ? `+${formulaModifier}` : formulaModifier}{" "}
                 formula,{" "}
@@ -371,10 +395,10 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
         <div className="flex flex-col gap-5 lg:col-span-5">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h2 className="font-serif text-lg font-bold tracking-wider text-[#fff8e8]">
+              <h2 className="font-serif text-lg font-bold tracking-wider text-text-primary">
                 Roll Outcome
               </h2>
-              <span className="font-mono text-xs text-[#c7b5d1]">
+              <span className="font-mono text-xs text-text-secondary">
                 Live Audit Log
               </span>
             </div>

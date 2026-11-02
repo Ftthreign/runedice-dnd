@@ -132,19 +132,19 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={springs.gentle}
-            className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-[#70418a] bg-[#290044] p-5 sm:p-6 text-[#fff8e8] shadow-[0_16px_40px_rgba(0,0,0,0.9)]"
+            className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-subtle-border bg-canvas-base p-5 sm:p-6 text-text-primary shadow-[0_16px_40px_rgba(0,0,0,0.9)]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#70418a]/40 pb-3">
+            <div className="flex items-center justify-between border-b border-subtle-border/40 pb-3">
               <div>
                 <h2
                   id="player-modal-title"
-                  className="font-serif text-xl font-bold text-[#fff8e8]"
+                  className="font-serif text-xl font-bold text-text-primary"
                 >
                   Party Roster
                 </h2>
-                <p className="font-mono text-xs text-[#c7b5d1]">
-                  Campaign: <span className="text-[#eee3b0]">{activeSession.name}</span>
+                <p className="font-mono text-xs text-text-secondary">
+                  Campaign: <span className="text-parchment-gold">{activeSession.name}</span>
                 </p>
               </div>
 
@@ -152,17 +152,17 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-[#c7b5d1] transition-colors hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] cursor-pointer"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Inscribe New Hero Form */}
-            <form onSubmit={handleAddPlayer} className="mt-4 border-b border-[#70418a]/40 pb-4">
+            <form onSubmit={handleAddPlayer} className="mt-4 border-b border-subtle-border/40 pb-4">
               <label
                 htmlFor="new-player-input"
-                className="font-mono text-xs font-semibold tracking-wider text-[#c7b5d1] uppercase"
+                className="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase"
               >
                 Enlist Adventurer
               </label>
@@ -178,7 +178,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                   }}
                   placeholder="Hero name (e.g. Geralt or Yennefer)"
                   autoComplete="off"
-                  className="w-full rounded-xl border border-[#70418a]/70 bg-[#200033] px-3.5 py-2.5 font-sans text-sm text-[#fff8e8] placeholder-[#c7b5d1]/40 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78]"
+                  className="w-full rounded-xl border border-subtle-border/70 bg-inset-dark px-3.5 py-2.5 font-sans text-sm text-text-primary placeholder-text-secondary/40 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta"
                 />
                 <ArcaneButton
                   type="submit"
@@ -202,7 +202,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
 
             {/* Roster List */}
             <div className="mt-3 flex-1 overflow-y-auto space-y-2 py-1 pr-1">
-              <div className="flex items-center justify-between text-xs text-[#c7b5d1] px-1 pb-1">
+              <div className="flex items-center justify-between text-xs text-text-secondary px-1 pb-1">
                 <span className="font-mono uppercase tracking-wider text-[11px]">
                   Enrolled Heroes ({sessionPlayers.length})
                 </span>
@@ -210,7 +210,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
               </div>
 
               {sessionPlayers.length === 0 ? (
-                <div className="py-6 text-center text-xs text-[#c7b5d1]">
+                <div className="py-6 text-center text-xs text-text-secondary">
                   No heroes currently enrolled in this party.
                 </div>
               ) : (
@@ -225,8 +225,8 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                       className={cn(
                         'flex items-center justify-between gap-3 rounded-xl border p-2.5 transition-all',
                         isActive
-                          ? 'border-[#eee3b0] bg-[#500071] shadow-[0_0_14px_rgba(238,227,176,0.2)]'
-                          : 'border-[#70418a]/40 bg-[#200033]/80 hover:border-[#8a2a78]'
+                          ? 'border-parchment-gold bg-surface-elevated shadow-[0_0_14px_rgba(238,227,176,0.2)]'
+                          : 'border-subtle-border/40 bg-inset-dark/80 hover:border-mystic-magenta'
                       )}
                     >
                       {/* Left: Avatar & Name */}
@@ -235,8 +235,8 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                           className={cn(
                             'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full font-mono text-xs font-bold',
                             isActive
-                              ? 'bg-[#eee3b0] text-[#200033]'
-                              : 'bg-[#35104a] text-[#c7b5d1]'
+                              ? 'bg-parchment-gold text-inset-dark'
+                              : 'bg-surface-muted text-text-secondary'
                           )}
                         >
                           {initial}
@@ -253,12 +253,12 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                                 if (e.key === 'Enter') handleSaveRename(player.id)
                                 if (e.key === 'Escape') setEditingPlayerId(null)
                               }}
-                              className="w-full rounded-lg border border-[#8a2a78] bg-[#200033] px-2 py-1 font-sans text-xs text-[#fff8e8] focus-visible:outline-none"
+                              className="w-full rounded-lg border border-mystic-magenta bg-inset-dark px-2 py-1 font-sans text-xs text-text-primary focus-visible:outline-none"
                             />
                             <button
                               type="button"
                               onClick={() => handleSaveRename(player.id)}
-                              className="rounded bg-[#eee3b0] px-2 py-1 text-[11px] font-bold text-[#200033] cursor-pointer"
+                              className="rounded bg-parchment-gold px-2 py-1 text-[11px] font-bold text-inset-dark cursor-pointer"
                             >
                               Save
                             </button>
@@ -272,13 +272,13 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                             <span
                               className={cn(
                                 'truncate font-sans font-semibold text-sm',
-                                isActive ? 'text-[#eee3b0]' : 'text-[#fff8e8]'
+                                isActive ? 'text-parchment-gold' : 'text-text-primary'
                               )}
                             >
                               {player.name}
                             </span>
                             {isActive && (
-                              <span className="flex items-center gap-1 rounded bg-[#eee3b0]/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-[#eee3b0] uppercase tracking-wider">
+                              <span className="flex items-center gap-1 rounded bg-parchment-gold/20 px-1.5 py-0.5 font-mono text-[9px] font-bold text-parchment-gold uppercase tracking-wider">
                                 <UserCheck className="h-3 w-3" />
                                 Active
                               </span>
@@ -297,7 +297,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                               setEditingName(player.name)
                             }}
                             aria-label={`Rename ${player.name}`}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg text-[#c7b5d1] hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#8a2a78] cursor-pointer"
+                            className="flex h-7 w-7 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-mystic-magenta cursor-pointer"
                           >
                             <Edit2 className="h-3 w-3" />
                           </button>
@@ -305,7 +305,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
                             type="button"
                             onClick={() => removePlayer(player.id)}
                             aria-label={`Remove ${player.name}`}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg text-[#ffb4ab] hover:bg-[#8e1934]/60 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5a7e] cursor-pointer"
+                            className="flex h-7 w-7 items-center justify-center rounded-lg text-[#ffb4ab] hover:bg-fumble-crimson/60 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5a7e] cursor-pointer"
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
@@ -318,7 +318,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
             </div>
 
             {/* Footer */}
-            <div className="mt-4 flex justify-end border-t border-[#70418a]/30 pt-3">
+            <div className="mt-4 flex justify-end border-t border-subtle-border/30 pt-3">
               <ArcaneButton variant="ghost" size="sm" onClick={onClose}>
                 Close Roster
               </ArcaneButton>

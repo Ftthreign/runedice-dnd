@@ -16,10 +16,10 @@ export function ModifierControl({ value, onChange, disabled }: ModifierControlPr
   return (
     <div className="w-full">
       <div className="mb-1.5 flex items-center justify-between">
-        <label className="font-mono text-xs font-semibold tracking-wider text-[#c7b5d1] uppercase">
+        <label className="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">
           Static Modifier
         </label>
-        <span className="font-mono text-xs font-bold text-[#eee3b0]">
+        <span className="font-mono text-xs font-bold text-parchment-gold">
           {value >= 0 ? `+${value}` : value}
         </span>
       </div>
@@ -31,7 +31,7 @@ export function ModifierControl({ value, onChange, disabled }: ModifierControlPr
           onClick={() => handleStep(-1)}
           disabled={disabled}
           aria-label="Decrease modifier by 1"
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#70418a]/60 bg-[#200033] text-[#c7b5d1] transition-colors hover:border-[#8a2a78] hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] disabled:opacity-40 cursor-pointer"
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-subtle-border/60 bg-inset-dark text-text-secondary transition-colors hover:border-mystic-magenta hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta disabled:opacity-40 cursor-pointer"
         >
           <Minus className="h-4 w-4" />
         </button>
@@ -47,7 +47,7 @@ export function ModifierControl({ value, onChange, disabled }: ModifierControlPr
             }}
             disabled={disabled}
             aria-label="Modifier value"
-            className="w-full rounded-xl border border-[#70418a]/60 bg-[#200033]/90 py-2.5 text-center font-mono text-base font-bold text-[#fff8e8] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78]"
+            className="w-full rounded-xl border border-subtle-border/60 bg-inset-dark/90 py-2.5 text-center font-mono text-base font-bold text-text-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta"
           />
         </div>
 
@@ -57,7 +57,7 @@ export function ModifierControl({ value, onChange, disabled }: ModifierControlPr
           onClick={() => handleStep(1)}
           disabled={disabled}
           aria-label="Increase modifier by 1"
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#70418a]/60 bg-[#200033] text-[#c7b5d1] transition-colors hover:border-[#8a2a78] hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] disabled:opacity-40 cursor-pointer"
+          className="flex h-11 w-11 items-center justify-center rounded-xl border border-subtle-border/60 bg-inset-dark text-text-secondary transition-colors hover:border-mystic-magenta hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta disabled:opacity-40 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
         </button>
@@ -73,8 +73,8 @@ export function ModifierControl({ value, onChange, disabled }: ModifierControlPr
             disabled={disabled}
             className={`flex-1 rounded-lg border py-1 font-mono text-[11px] font-semibold transition-all ${
               value === preset
-                ? 'border-[#8a2a78] bg-[#500071] text-[#eee3b0]'
-                : 'border-[#70418a]/40 bg-[#200033]/70 text-[#c7b5d1] hover:border-[#8a2a78] hover:text-[#fff8e8]'
+                ? 'border-mystic-magenta bg-surface-elevated text-parchment-gold'
+                : 'border-subtle-border/40 bg-inset-dark/70 text-text-secondary hover:border-mystic-magenta hover:text-text-primary'
             }`}
           >
             {preset > 0 ? `+${preset}` : preset}

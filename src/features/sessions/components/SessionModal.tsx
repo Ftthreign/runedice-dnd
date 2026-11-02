@@ -83,29 +83,29 @@ export function SessionModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={springs.gentle}
-            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#70418a] bg-[#500071] p-6 text-[#fff8e8] shadow-[0_12px_36px_-4px_rgba(12,0,20,0.9)]"
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-subtle-border bg-surface-elevated p-6 text-text-primary shadow-[0_12px_36px_-4px_rgba(12,0,20,0.9)]"
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={onClose}
               aria-label="Close dialog"
-              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-lg text-[#c7b5d1] transition-colors hover:bg-[#35104a] hover:text-[#fff8e8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] cursor-pointer"
+              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-surface-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
 
             {/* Header */}
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-[#eee3b0]" />
+              <Sparkles className="h-5 w-5 text-parchment-gold" />
               <h2
                 id="session-modal-title"
-                className="font-serif text-xl font-bold tracking-wide text-[#fff8e8]"
+                className="font-serif text-xl font-bold tracking-wide text-text-primary"
               >
                 {title}
               </h2>
             </div>
-            <p className="mt-1 font-sans text-xs text-[#c7b5d1] leading-relaxed">
+            <p className="mt-1 font-sans text-xs text-text-secondary leading-relaxed">
               {description}
             </p>
 
@@ -114,7 +114,7 @@ export function SessionModal({
               <div>
                 <label
                   htmlFor="session-name-input"
-                  className="font-mono text-xs font-semibold tracking-wider text-[#c7b5d1] uppercase"
+                  className="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase"
                 >
                   Session Title
                 </label>
@@ -127,7 +127,7 @@ export function SessionModal({
                   placeholder="e.g. Curse of Strahd or Friday D&D"
                   required
                   autoComplete="off"
-                  className="mt-1.5 w-full rounded-xl border border-[#70418a]/70 bg-[#200033] px-4 py-3 font-mono text-sm text-[#fff8e8] placeholder-[#c7b5d1]/40 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] focus-visible:border-transparent"
+                  className="mt-1.5 w-full rounded-xl border border-subtle-border/70 bg-inset-dark px-4 py-3 font-mono text-sm text-text-primary placeholder-text-secondary/40 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta focus-visible:border-transparent"
                 />
               </div>
 

@@ -156,10 +156,10 @@ export function DiceSelector({
   return (
     <div className="w-full">
       <div className="mb-2 flex items-center justify-between">
-        <label className="font-mono text-xs font-semibold tracking-wider text-[#c7b5d1] uppercase">
+        <label className="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">
           Arcane Polyhedrals
         </label>
-        <span className="text-[11px] text-[#c7b5d1]/70">
+        <span className="text-[11px] text-text-secondary/70">
           Click to add • Right-click to remove
         </span>
       </div>
@@ -187,16 +187,16 @@ export function DiceSelector({
               className={cn(
                 "group relative flex flex-col items-center justify-center rounded-xl border p-2 sm:p-2.5 transition-all select-none",
                 "min-h-[58px] sm:min-h-[64px]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] focus-visible:ring-offset-2 focus-visible:ring-offset-[#200033]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mystic-magenta focus-visible:ring-offset-2 focus-visible:ring-offset-inset-dark",
                 "disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer",
                 hasCount
-                  ? "border-[#8a2a78] bg-[#500071] text-[#fff8e8] shadow-[0_0_18px_rgba(138,42,120,0.4)]"
-                  : "border-[#70418a]/50 bg-[#200033]/90 text-[#c7b5d1] hover:border-[#8a2a78]/80 hover:bg-[#35104a]/70 hover:text-[#fff8e8]",
+                  ? "border-mystic-magenta bg-surface-elevated text-text-primary shadow-[0_0_18px_rgba(138,42,120,0.4)]"
+                  : "border-subtle-border/50 bg-inset-dark/90 text-text-secondary hover:border-mystic-magenta/80 hover:bg-surface-muted/70 hover:text-text-primary",
               )}
             >
               {/* Badge for count */}
               {hasCount && (
-                <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#eee3b0] px-1 font-mono text-[11px] font-bold text-[#200033] shadow-md">
+                <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-parchment-gold px-1 font-mono text-[11px] font-bold text-inset-dark shadow-md">
                   {count}
                 </span>
               )}
@@ -207,8 +207,8 @@ export function DiceSelector({
                 className={cn(
                   "h-6 w-6 transition-transform duration-200 group-hover:scale-110 sm:h-7 sm:w-7",
                   hasCount
-                    ? "text-[#eee3b0]"
-                    : "text-[#c7b5d1] group-hover:text-[#eee3b0]",
+                    ? "text-parchment-gold"
+                    : "text-text-secondary group-hover:text-parchment-gold",
                 )}
               />
 
