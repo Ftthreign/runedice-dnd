@@ -15,3 +15,4 @@ todos.json
 .agents
 *.md
 !README.md
+.cta.json
