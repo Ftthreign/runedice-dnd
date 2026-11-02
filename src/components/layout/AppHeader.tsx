@@ -9,12 +9,9 @@ import {
   DeleteSessionDialog,
   SessionDrawerMobile,
 } from '../../features/sessions'
+import { PlayerManagerModal } from '../../features/players'
 
-interface AppHeaderProps {
-  onOpenPlayerModal?: () => void
-}
-
-export function AppHeader({ onOpenPlayerModal }: AppHeaderProps) {
+export function AppHeader() {
   const {
     activeSession,
     activePlayer,
@@ -23,7 +20,7 @@ export function AppHeader({ onOpenPlayerModal }: AppHeaderProps) {
     deleteSession,
   } = useAppState()
 
-  // Modal and Drawer States
+  // Session Drawer & Modal States
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false)
   const [sessionModalState, setSessionModalState] = React.useState<{
     isOpen: boolean
@@ -45,6 +42,9 @@ export function AppHeader({ onOpenPlayerModal }: AppHeaderProps) {
     sessionId: '',
     sessionName: '',
   })
+
+  // Player Manager Modal State
+  const [isPlayerModalOpen, setIsPlayerModalOpen] = React.useState(false)
 
   const effectiveSessionName = activeSession?.name || 'No Active Session'
   const effectivePlayerName = activePlayer?.name || 'No Active Player'
@@ -92,7 +92,7 @@ export function AppHeader({ onOpenPlayerModal }: AppHeaderProps) {
             {/* Active Player Pill */}
             <button
               type="button"
-              onClick={onOpenPlayerModal}
+              onClick={() => setIsPlayerModalOpen(true)}
               aria-label="Manage Players"
               className="flex items-center gap-1.5 rounded-md border border-[#70418a]/70 bg-[#35104a]/80 px-2.5 py-1.5 text-xs text-[#fff8e8] transition-all hover:border-[#8a2a78] hover:bg-[#500071] hover:shadow-[0_0_12px_rgba(138,42,120,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8a2a78] cursor-pointer"
             >
@@ -163,6 +163,12 @@ export function AppHeader({ onOpenPlayerModal }: AppHeaderProps) {
         onConfirm={() => {
           deleteSession(deleteDialogState.sessionId)
         }}
+      />
+
+      {/* Player Manager Modal */}
+      <PlayerManagerModal
+        isOpen={isPlayerModalOpen}
+        onClose={() => setIsPlayerModalOpen(false)}
       />
     </>
   )

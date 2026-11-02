@@ -13,6 +13,7 @@ import type { DieType, DiceRollResult, RollMode } from '../types/dice-types'
 import { Dices, RotateCcw, PlusCircle } from 'lucide-react'
 import { useAppState } from '../../app-state/AppStateContext'
 import { SessionModal } from '../../sessions/components/SessionModal'
+import { PlayerSelector, PlayerManagerModal } from '../../players'
 
 interface DiceWorkspaceProps {
   onRollComplete?: (result: DiceRollResult) => void
@@ -33,6 +34,7 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
   const [lastResult, setLastResult] = React.useState<DiceRollResult | null>(null)
   const [isRolling, setIsRolling] = React.useState<boolean>(false)
   const [isNewSessionModalOpen, setIsNewSessionModalOpen] = React.useState(false)
+  const [isPlayerModalOpen, setIsPlayerModalOpen] = React.useState(false)
 
   // Compute dice counts from current formula to highlight in DiceSelector
   const diceCounts = React.useMemo(() => {
@@ -217,6 +219,11 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start lg:gap-8">
         {/* Left Column: Interactive Controls Stage (7 cols on Desktop) */}
         <div className="flex flex-col gap-5 lg:col-span-7">
+          {/* Active Turn: Party Player Selector */}
+          <PlayerSelector
+            onOpenPlayerManager={() => setIsPlayerModalOpen(true)}
+          />
+
           {/* Formula Inscription Bar */}
           <FormulaBar
             value={formula}
@@ -297,6 +304,12 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
           />
         </div>
       </div>
+
+      {/* Party Manager Dialog */}
+      <PlayerManagerModal
+        isOpen={isPlayerModalOpen}
+        onClose={() => setIsPlayerModalOpen(false)}
+      />
     </div>
   )
 }
