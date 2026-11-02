@@ -81,11 +81,37 @@ export function deleteSessionHelper(
   const remainingPlayers = state.players.filter((p) => p.sessionId !== sessionId)
   const remainingRolls = state.rolls.filter((r) => r.sessionId !== sessionId)
 
+  // Guard against zero-session stranded state: if all sessions deleted, spawn a default session
+  if (remainingSessions.length === 0) {
+    const fallbackSessionId = `session-${Date.now()}`
+    const fallbackPlayerId = `player-${Date.now()}`
+    const defaultPlayer: RuneDicePlayer = {
+      id: fallbackPlayerId,
+      sessionId: fallbackSessionId,
+      name: 'Adventurer',
+      createdAt: new Date().toISOString(),
+    }
+    const defaultSession: RuneDiceSession = {
+      id: fallbackSessionId,
+      name: 'Default Campaign',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      playerIds: [fallbackPlayerId],
+      activePlayerId: fallbackPlayerId,
+    }
+
+    return {
+      ...state,
+      sessions: [defaultSession],
+      players: [defaultPlayer],
+      rolls: [],
+      activeSessionId: fallbackSessionId,
+    }
+  }
+
   const nextActiveId =
     state.activeSessionId === sessionId
-      ? remainingSessions.length > 0
-        ? remainingSessions[0].id
-        : null
+      ? remainingSessions[0].id
       : state.activeSessionId
 
   return {

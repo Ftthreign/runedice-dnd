@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { AlertCircle, X } from 'lucide-react'
 import { ArcaneButton } from '../../../components/ui/ArcaneButton'
 import { springs } from '../../../lib/motion-tokens'
+import { useFocusTrap } from '../../../lib/use-focus-trap'
 
 interface ClearHistoryDialogProps {
   isOpen: boolean
@@ -19,6 +20,10 @@ export function ClearHistoryDialog({
   onClose,
   onConfirm,
 }: ClearHistoryDialogProps) {
+  const modalRef = React.useRef<HTMLDivElement>(null)
+
+  useFocusTrap(modalRef, isOpen)
+
   // Close on Escape key
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,6 +51,7 @@ export function ClearHistoryDialog({
 
           {/* Dialog Container */}
           <motion.div
+            ref={modalRef}
             role="alertdialog"
             aria-modal="true"
             aria-labelledby="clear-history-title"

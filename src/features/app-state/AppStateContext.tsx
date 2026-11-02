@@ -10,6 +10,7 @@ import type {
 import { INITIAL_APP_STATE } from "../../types/app-state";
 import { defaultStorageAdapter } from "../../lib/storage/local-storage-adapter";
 import type { StorageAdapter } from "../../lib/storage/storage-adapter";
+import { deleteSessionHelper } from "../sessions/services/session-service";
 
 interface AppStateContextValue {
   state: RuneDiceAppState;
@@ -33,6 +34,8 @@ interface AppStateContextValue {
   createPlayer: (sessionId: string, name: string) => RuneDicePlayer | null;
   renamePlayer: (playerId: string, newName: string) => void;
   removePlayer: (playerId: string) => void;
+  isPlayerModalOpen: boolean;
+  setIsPlayerModalOpen: (open: boolean) => void;
 }
 
 const AppStateContext = React.createContext<AppStateContextValue | null>(null);
@@ -48,8 +51,8 @@ export function AppStateProvider({
 }: AppStateProviderProps) {
   const [state, setState] = React.useState<RuneDiceAppState>(INITIAL_APP_STATE);
   const [isHydrated, setIsHydrated] = React.useState(false);
+  const [isPlayerModalOpen, setIsPlayerModalOpen] = React.useState(false);
 
-  // 1. SSR Hydration Guard: Load from adapter only after mount in browser
   React.useEffect(() => {
     let isMounted = true;
 
@@ -191,30 +194,7 @@ export function AppStateProvider({
   );
 
   const deleteSession = React.useCallback((sessionId: string) => {
-    setState((prev) => {
-      const remainingSessions = prev.sessions.filter((s) => s.id !== sessionId);
-      const remainingPlayers = prev.players.filter(
-        (p) => p.sessionId !== sessionId,
-      );
-      const remainingRolls = prev.rolls.filter(
-        (r) => r.sessionId !== sessionId,
-      );
-
-      const nextActiveId =
-        prev.activeSessionId === sessionId
-          ? remainingSessions.length > 0
-            ? remainingSessions[0].id
-            : null
-          : prev.activeSessionId;
-
-      return {
-        ...prev,
-        sessions: remainingSessions,
-        players: remainingPlayers,
-        rolls: remainingRolls,
-        activeSessionId: nextActiveId,
-      };
-    });
+    setState((prev) => deleteSessionHelper(prev, sessionId));
   }, []);
 
   // Player Actions
@@ -391,6 +371,8 @@ export function AppStateProvider({
     createPlayer,
     renamePlayer,
     removePlayer,
+    isPlayerModalOpen,
+    setIsPlayerModalOpen,
   };
 
   return (

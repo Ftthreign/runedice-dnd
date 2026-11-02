@@ -7,6 +7,7 @@ import { useAppState } from '../../app-state/AppStateContext'
 import { ArcaneButton } from '../../../components/ui/ArcaneButton'
 import { springs } from '../../../lib/motion-tokens'
 import { cn } from '../../../lib/utils'
+import { useFocusTrap } from '../../../lib/use-focus-trap'
 
 interface SessionDrawerMobileProps {
   isOpen: boolean
@@ -24,6 +25,9 @@ export function SessionDrawerMobile({
   onOpenDeleteDialog,
 }: SessionDrawerMobileProps) {
   const { state, activeSession, setActiveSessionId } = useAppState()
+  const modalRef = React.useRef<HTMLDivElement>(null)
+
+  useFocusTrap(modalRef, isOpen)
 
   // Close on Escape key
   React.useEffect(() => {
@@ -52,6 +56,7 @@ export function SessionDrawerMobile({
 
           {/* Drawer / Card Container */}
           <motion.div
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="session-drawer-title"
@@ -181,17 +186,38 @@ export function SessionDrawerMobile({
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onClose()
-                            onOpenDeleteDialog(session.id, session.name)
-                          }}
-                          aria-label={`Delete ${session.name}`}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-[#ffb4ab] hover:bg-[#8e1934]/60 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5a7e] cursor-pointer"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        {(() => {
+                          const isOnlySession = state.sessions.length <= 1
+                          return (
+                            <button
+                              type="button"
+                              disabled={isOnlySession}
+                              onClick={() => {
+                                if (isOnlySession) return
+                                onClose()
+                                onOpenDeleteDialog(session.id, session.name)
+                              }}
+                              aria-label={
+                                isOnlySession
+                                  ? 'At least one campaign chamber must remain'
+                                  : `Delete ${session.name}`
+                              }
+                              title={
+                                isOnlySession
+                                  ? 'At least one campaign chamber must remain'
+                                  : `Delete ${session.name}`
+                              }
+                              className={cn(
+                                'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+                                isOnlySession
+                                  ? 'text-[#70418a]/40 cursor-not-allowed opacity-40'
+                                  : 'text-[#ffb4ab] hover:bg-[#8e1934]/60 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#ff5a7e] cursor-pointer'
+                              )}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          )
+                        })()}
                       </div>
                     </div>
                   )

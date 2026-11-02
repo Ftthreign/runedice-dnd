@@ -7,6 +7,7 @@ import { useAppState } from '../../app-state/AppStateContext'
 import { ArcaneButton } from '../../../components/ui/ArcaneButton'
 import { springs } from '../../../lib/motion-tokens'
 import { cn } from '../../../lib/utils'
+import { useFocusTrap } from '../../../lib/use-focus-trap'
 
 interface PlayerManagerModalProps {
   isOpen: boolean
@@ -30,6 +31,9 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
   const [editingName, setEditingName] = React.useState('')
 
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const modalRef = React.useRef<HTMLDivElement>(null)
+
+  useFocusTrap(modalRef, isOpen)
 
   React.useEffect(() => {
     if (isOpen) {
@@ -120,6 +124,7 @@ export function PlayerManagerModal({ isOpen, onClose }: PlayerManagerModalProps)
 
           {/* Modal Container */}
           <motion.div
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="player-modal-title"

@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import * as React from 'react'
-import { DiceSelector } from './DiceSelector'
-import { FormulaBar } from './FormulaBar'
-import { RollModeToggle } from './RollModeToggle'
-import { ModifierControl } from './ModifierControl'
-import { RollResultPanel } from './RollResultPanel'
-import { ArcaneButton } from '../../../components/ui/ArcaneButton'
-import { evaluateRoll } from '../engine/dice-evaluator'
-import { parseDiceFormula, validateDiceFormula } from '../engine/dice-parser'
-import type { DieType, DiceRollResult, RollMode } from '../types/dice-types'
-import { Dices, RotateCcw, PlusCircle } from 'lucide-react'
-import { useAppState } from '../../app-state/AppStateContext'
-import { SessionModal } from '../../sessions/components/SessionModal'
-import { PlayerSelector, PlayerManagerModal } from '../../players'
-import { RollHistoryList } from '../../history'
+import * as React from "react";
+import { DiceSelector } from "./DiceSelector";
+import { FormulaBar } from "./FormulaBar";
+import { RollModeToggle } from "./RollModeToggle";
+import { ModifierControl } from "./ModifierControl";
+import { RollResultPanel } from "./RollResultPanel";
+import { ArcaneButton } from "../../../components/ui/ArcaneButton";
+import { evaluateRoll } from "../engine/dice-evaluator";
+import { parseDiceFormula, validateDiceFormula } from "../engine/dice-parser";
+import type { DieType, DiceRollResult, RollMode } from "../types/dice-types";
+import { Dices, RotateCcw, PlusCircle } from "lucide-react";
+import { useAppState } from "../../app-state/AppStateContext";
+import { SessionModal } from "../../sessions/components/SessionModal";
+import { PlayerSelector } from "../../players";
+import { RollHistoryList } from "../../history";
 
 interface DiceWorkspaceProps {
-  onRollComplete?: (result: DiceRollResult) => void
+  onRollComplete?: (result: DiceRollResult) => void;
 }
 
 export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
@@ -27,130 +27,157 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
     activePlayer,
     addRoll,
     createSession,
-  } = useAppState()
+    setIsPlayerModalOpen,
+  } = useAppState();
 
-  const [formula, setFormula] = React.useState<string>('1d20')
-  const [mode, setMode] = React.useState<RollMode>('normal')
-  const [standaloneModifier, setStandaloneModifier] = React.useState<number>(0)
-  const [lastResult, setLastResult] = React.useState<DiceRollResult | null>(null)
-  const [isRolling, setIsRolling] = React.useState<boolean>(false)
-  const [isNewSessionModalOpen, setIsNewSessionModalOpen] = React.useState(false)
-  const [isPlayerModalOpen, setIsPlayerModalOpen] = React.useState(false)
+  const [formula, setFormula] = React.useState<string>("1d20");
+  const [mode, setMode] = React.useState<RollMode>("normal");
+  const [standaloneModifier, setStandaloneModifier] = React.useState<number>(0);
+  const [lastResult, setLastResult] = React.useState<DiceRollResult | null>(
+    null,
+  );
+  const [isRolling, setIsRolling] = React.useState<boolean>(false);
+  const [isNewSessionModalOpen, setIsNewSessionModalOpen] =
+    React.useState(false);
 
   // Compute dice counts from current formula to highlight in DiceSelector
   const diceCounts = React.useMemo(() => {
     try {
-      const parsed = parseDiceFormula(formula)
-      const counts: Partial<Record<DieType, number>> = {}
+      const parsed = parseDiceFormula(formula);
+      const counts: Partial<Record<DieType, number>> = {};
       for (const term of parsed.terms) {
-        if (term.type === 'die' && term.sign === 1) {
-          const key = `d${term.sides}` as DieType
-          counts[key] = (counts[key] || 0) + term.count
+        if (term.type === "die" && term.sign === 1) {
+          const key = `d${term.sides}` as DieType;
+          counts[key] = (counts[key] || 0) + term.count;
         }
       }
-      return counts
+      return counts;
     } catch {
-      return {}
+      return {};
     }
-  }, [formula])
+  }, [formula]);
+
+  // Combined modifier computation (PRD 4.3)
+  const formulaModifier = React.useMemo(() => {
+    try {
+      return parseDiceFormula(formula).staticModifier;
+    } catch {
+      return 0;
+    }
+  }, [formula]);
+  const combinedModifier = formulaModifier + standaloneModifier;
 
   // Handle clicking a die button
   const handleAddDie = (die: DieType) => {
     try {
-      const parsed = parseDiceFormula(formula)
-      const sides = parseInt(die.replace('d', ''), 10)
-      let found = false
+      const parsed = parseDiceFormula(formula);
+      const sides = parseInt(die.replace("d", ""), 10);
+      let found = false;
 
       // Check if this die type already exists with positive sign
       for (const term of parsed.terms) {
-        if (term.type === 'die' && term.sides === sides && term.sign === 1) {
-          term.count += 1
-          found = true
-          break
+        if (term.type === "die" && term.sides === sides && term.sign === 1) {
+          term.count += 1;
+          found = true;
+          break;
         }
       }
 
       if (!found) {
         // Append new die term
         parsed.terms.push({
-          type: 'die',
+          type: "die",
           count: 1,
           sides,
           sign: 1,
-        })
+        });
       }
 
       // Reconstruct formula string
       const reconstructed = parsed.terms
         .map((t, idx) => {
-          const signStr = idx === 0 ? (t.sign === -1 ? '-' : '') : t.sign === 1 ? ' + ' : ' - '
-          if (t.type === 'die') {
-            return `${signStr}${t.count}d${t.sides}`
+          const signStr =
+            idx === 0
+              ? t.sign === -1
+                ? "-"
+                : ""
+              : t.sign === 1
+                ? " + "
+                : " - ";
+          if (t.type === "die") {
+            return `${signStr}${t.count}d${t.sides}`;
           } else {
-            return `${signStr}${t.value}`
+            return `${signStr}${t.value}`;
           }
         })
-        .join('')
+        .join("");
 
-      setFormula(reconstructed)
+      setFormula(reconstructed);
     } catch {
       // If formula was empty or invalid, replace with 1die
-      setFormula(`1${die}`)
+      setFormula(`1${die}`);
     }
-  }
+  };
 
   // Handle right-click/remove a die
   const handleRemoveDie = (die: DieType) => {
     try {
-      const parsed = parseDiceFormula(formula)
-      const sides = parseInt(die.replace('d', ''), 10)
+      const parsed = parseDiceFormula(formula);
+      const sides = parseInt(die.replace("d", ""), 10);
 
       for (let i = 0; i < parsed.terms.length; i++) {
-        const term = parsed.terms[i]
-        if (term.type === 'die' && term.sides === sides && term.sign === 1) {
-          term.count -= 1
+        const term = parsed.terms[i];
+        if (term.type === "die" && term.sides === sides && term.sign === 1) {
+          term.count -= 1;
           if (term.count <= 0) {
-            parsed.terms.splice(i, 1)
+            parsed.terms.splice(i, 1);
           }
-          break
+          break;
         }
       }
 
       if (parsed.terms.length === 0) {
-        setFormula('')
-        return
+        setFormula("");
+        return;
       }
 
       const reconstructed = parsed.terms
         .map((t, idx) => {
-          const signStr = idx === 0 ? (t.sign === -1 ? '-' : '') : t.sign === 1 ? ' + ' : ' - '
-          if (t.type === 'die') {
-            return `${signStr}${t.count}d${t.sides}`
+          const signStr =
+            idx === 0
+              ? t.sign === -1
+                ? "-"
+                : ""
+              : t.sign === 1
+                ? " + "
+                : " - ";
+          if (t.type === "die") {
+            return `${signStr}${t.count}d${t.sides}`;
           } else {
-            return `${signStr}${t.value}`
+            return `${signStr}${t.value}`;
           }
         })
-        .join('')
+        .join("");
 
-      setFormula(reconstructed)
+      setFormula(reconstructed);
     } catch {
       // Ignore
     }
-  }
+  };
 
   // Execute a standard roll
   const handleRoll = () => {
-    if (!formula.trim()) return
-    const validation = validateDiceFormula(formula)
-    if (!validation.isValid) return
+    if (!formula.trim()) return;
+    const validation = validateDiceFormula(formula);
+    if (!validation.isValid) return;
 
-    setIsRolling(true)
+    setIsRolling(true);
 
     setTimeout(() => {
       try {
-        const result = evaluateRoll(formula, mode, standaloneModifier)
-        setLastResult(result)
-        setIsRolling(false)
+        const result = evaluateRoll(formula, mode, standaloneModifier);
+        setLastResult(result);
+        setIsRolling(false);
 
         // Automatically persist roll to active session
         addRoll({
@@ -163,28 +190,29 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
           total: result.total,
           isNatural20: result.isNatural20,
           isNatural1: result.isNatural1,
-        })
+        });
 
         if (onRollComplete) {
-          onRollComplete(result)
+          onRollComplete(result);
         }
       } catch (err) {
-        setIsRolling(false)
+        setIsRolling(false);
       }
-    }, 200)
-  }
+    }, 200);
+  };
 
   // Re-roll a previous formula directly from audit history
   const handleReroll = (rerollFormula: string, rerollMode: RollMode) => {
-    setFormula(rerollFormula)
-    setMode(rerollMode)
-    setIsRolling(true)
+    setFormula(rerollFormula);
+    setMode(rerollMode);
+    setStandaloneModifier(0);
+    setIsRolling(true);
 
     setTimeout(() => {
       try {
-        const result = evaluateRoll(rerollFormula, rerollMode, standaloneModifier)
-        setLastResult(result)
-        setIsRolling(false)
+        const result = evaluateRoll(rerollFormula, rerollMode, 0);
+        setLastResult(result);
+        setIsRolling(false);
 
         addRoll({
           formula: result.formula,
@@ -196,18 +224,18 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
           total: result.total,
           isNatural20: result.isNatural20,
           isNatural1: result.isNatural1,
-        })
+        });
 
         if (onRollComplete) {
-          onRollComplete(result)
+          onRollComplete(result);
         }
-      } catch (err) {
-        setIsRolling(false)
+      } catch {
+        setIsRolling(false);
       }
-    }, 200)
-  }
+    }, 200);
+  };
 
-  const isValid = validateDiceFormula(formula).isValid && !!formula.trim()
+  const isValid = validateDiceFormula(formula).isValid && !!formula.trim();
 
   // Empty state if user banishes all sessions
   if (state.sessions.length === 0) {
@@ -221,7 +249,8 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
             No Campaign Inscribed
           </h2>
           <p className="mt-2 text-sm text-[#c7b5d1] leading-relaxed">
-            Every adventurer requires a campaign chamber to record rolls, track party turns, and weave their tale.
+            Every adventurer requires a campaign chamber to record rolls, track
+            party turns, and weave their tale.
           </p>
           <div className="mt-6 flex justify-center">
             <ArcaneButton
@@ -243,7 +272,7 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
           onSubmit={(name) => createSession(name)}
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -287,7 +316,27 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
             />
           </div>
 
-          {/* Primary Action Button (Roll / Cast) */}
+          {/* Combined Modifier Clarity (PRD 4.3) */}
+          {formulaModifier !== 0 && standaloneModifier !== 0 && (
+            <div className="flex items-center gap-2 rounded-lg border border-[#70418a]/60 bg-[#35104a]/70 px-3 py-1.5 font-mono text-xs text-[#eee3b0]">
+              <span className="font-bold">Combined Modifier:</span>
+              <span className="font-bold">
+                {combinedModifier >= 0
+                  ? `+${combinedModifier}`
+                  : combinedModifier}
+              </span>
+              <span className="text-[10px] text-[#c7b5d1]">
+                (
+                {formulaModifier >= 0 ? `+${formulaModifier}` : formulaModifier}{" "}
+                formula,{" "}
+                {standaloneModifier >= 0
+                  ? `+${standaloneModifier}`
+                  : standaloneModifier}{" "}
+                control)
+              </span>
+            </div>
+          )}
+
           <div className="mt-2 flex flex-col gap-2.5 sm:flex-row">
             <ArcaneButton
               variant="primary"
@@ -297,16 +346,16 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
               className="flex-1 gap-2 shadow-[0_0_24px_rgba(238,227,176,0.35)]"
             >
               <Dices className="h-5 w-5" />
-              <span>{isRolling ? 'Casting...' : 'Roll The Runes'}</span>
+              <span>{isRolling ? "Casting..." : "Roll The Runes"}</span>
             </ArcaneButton>
 
             <ArcaneButton
               variant="secondary"
               size="lg"
               onClick={() => {
-                setFormula('1d20')
-                setMode('normal')
-                setStandaloneModifier(0)
+                setFormula("1d20");
+                setMode("normal");
+                setStandaloneModifier(0);
               }}
               disabled={isRolling}
               title="Reset to 1d20"
@@ -333,8 +382,8 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
             <RollResultPanel
               result={lastResult}
               isRolling={isRolling}
-              playerName={activePlayer?.name || 'Adventurer'}
-              sessionName={activeSession?.name || 'Default Session'}
+              playerName={activePlayer?.name || "Adventurer"}
+              sessionName={activeSession?.name || "Default Session"}
             />
           </div>
 
@@ -342,14 +391,8 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
           <RollHistoryList onReroll={handleReroll} />
         </div>
       </div>
-
-      {/* Party Manager Dialog */}
-      <PlayerManagerModal
-        isOpen={isPlayerModalOpen}
-        onClose={() => setIsPlayerModalOpen(false)}
-      />
     </div>
-  )
+  );
 }
 
-export default DiceWorkspace
+export default DiceWorkspace;

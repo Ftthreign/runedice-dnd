@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { X, Sparkles } from 'lucide-react'
 import { ArcaneButton } from '../../../components/ui/ArcaneButton'
 import { springs } from '../../../lib/motion-tokens'
+import { useFocusTrap } from '../../../lib/use-focus-trap'
 
 interface SessionModalProps {
   isOpen: boolean
@@ -23,6 +24,9 @@ export function SessionModal({
 }: SessionModalProps) {
   const [name, setName] = React.useState(initialName)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  const modalRef = React.useRef<HTMLDivElement>(null)
+
+  useFocusTrap(modalRef, isOpen)
 
   React.useEffect(() => {
     if (isOpen) {
@@ -71,6 +75,7 @@ export function SessionModal({
 
           {/* Modal Container */}
           <motion.div
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="session-modal-title"

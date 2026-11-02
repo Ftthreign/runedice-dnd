@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from "react";
 import { motion } from "motion/react";
 import { SUPPORTED_DICE, type DieType } from "../types/dice-types";
 import { springs } from "../../../lib/motion-tokens";
