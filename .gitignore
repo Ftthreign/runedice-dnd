@@ -16,3 +16,4 @@ todos.json
 *.md
 !README.md
 .cta.json
+.vercel

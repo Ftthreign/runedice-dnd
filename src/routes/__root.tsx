@@ -45,6 +45,12 @@ function ClientDevtools() {
 }
 
 export const Route = createRootRoute({
+  notFoundComponent: () => (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center p-6 text-center">
+      <h1 className="font-serif text-3xl font-bold text-parchment-gold">404 - Not Found</h1>
+      <p className="mt-2 text-sm text-text-secondary">The requested chamber does not exist.</p>
+    </div>
+  ),
   head: () => ({
     meta: [
       {
@@ -68,6 +74,11 @@ export const Route = createRootRoute({
       },
     ],
     links: [
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/favicon.svg",
+      },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
