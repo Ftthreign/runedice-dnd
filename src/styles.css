@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  /* Colors */
+  --color-canvas-base: #290044;
+  --color-canvas-deep: #23003b;
+  --color-inset-dark: #200033;
+  --color-surface-muted: #35104a;
+  --color-surface-elevated: #500071;
+  --color-mystic-magenta: #8a2a78;
+  --color-subtle-border: #70418a;
+  --color-parchment-gold: #eee3b0;
+  --color-fumble-crimson: #8e1934;
+  --color-text-primary: #fff8e8;
+  --color-text-secondary: #c7b5d1;
+
+  /* Typography */
+  --font-serif: "Bodoni Moda", Georgia, serif;
+  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Arcane Glows & Shadows */
+  --shadow-arcane-card: 0 4px 16px -2px rgba(16, 0, 28, 0.7);
+  --shadow-arcane-modal: 0 12px 32px -4px rgba(12, 0, 20, 0.85);
+  --shadow-mystic-glow: 0 0 20px -2px rgba(138, 42, 120, 0.45);
+  --shadow-gold-bloom: 0 0 28px 2px rgba(238, 227, 176, 0.35);
+  --shadow-crimson-fumble: 0 0 24px 2px rgba(142, 25, 52, 0.45);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+#app {
+  min-height: 100%;
+  background-color: var(--color-canvas-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background:
+    radial-gradient(1200px 700px at 10% -10%, rgba(138, 42, 120, 0.18), transparent 60%),
+    radial-gradient(1000px 600px at 90% 110%, rgba(80, 0, 113, 0.25), transparent 65%),
+    linear-gradient(180deg, #290044 0%, #200033 100%);
+  background-attachment: fixed;
+}
+
+/* Custom utility classes */
+.font-arcane-title {
+  font-family: var(--font-serif);
+}
+
+.font-arcane-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+.border-subtle {
+  border-color: var(--color-subtle-border);
+}
+
+.glow-mystic {
+  box-shadow: 0 0 20px -2px rgba(138, 42, 120, 0.45), 0 0 0 1px #8a2a78;
+}
+
+.glow-gold {
+  box-shadow: 0 0 28px 2px rgba(238, 227, 176, 0.35), 0 0 0 1px #eee3b0;
+}
+
+.glow-crimson {
+  box-shadow: 0 0 24px 2px rgba(142, 25, 52, 0.45), 0 0 0 1px #8e1934;
+}
+
+/* Scrollbar styling for arcane dark aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #200033;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #500071;
+  border-radius: 4px;
+  border: 1px solid #70418a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8a2a78;
+}
