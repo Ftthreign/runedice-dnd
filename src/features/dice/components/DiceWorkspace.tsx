@@ -14,6 +14,7 @@ import { Dices, RotateCcw, PlusCircle } from 'lucide-react'
 import { useAppState } from '../../app-state/AppStateContext'
 import { SessionModal } from '../../sessions/components/SessionModal'
 import { PlayerSelector, PlayerManagerModal } from '../../players'
+import { RollHistoryList } from '../../history'
 
 interface DiceWorkspaceProps {
   onRollComplete?: (result: DiceRollResult) => void
@@ -137,7 +138,7 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
     }
   }
 
-  // Execute the roll
+  // Execute a standard roll
   const handleRoll = () => {
     if (!formula.trim()) return
     const validation = validateDiceFormula(formula)
@@ -145,7 +146,6 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
 
     setIsRolling(true)
 
-    // Brief rolling micro-animation
     setTimeout(() => {
       try {
         const result = evaluateRoll(formula, mode, standaloneModifier)
@@ -153,6 +153,39 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
         setIsRolling(false)
 
         // Automatically persist roll to active session
+        addRoll({
+          formula: result.formula,
+          mode: result.mode,
+          allRolls: result.allRolls,
+          diceResults: result.diceResults,
+          diceTotal: result.diceTotal,
+          modifier: result.modifier,
+          total: result.total,
+          isNatural20: result.isNatural20,
+          isNatural1: result.isNatural1,
+        })
+
+        if (onRollComplete) {
+          onRollComplete(result)
+        }
+      } catch (err) {
+        setIsRolling(false)
+      }
+    }, 200)
+  }
+
+  // Re-roll a previous formula directly from audit history
+  const handleReroll = (rerollFormula: string, rerollMode: RollMode) => {
+    setFormula(rerollFormula)
+    setMode(rerollMode)
+    setIsRolling(true)
+
+    setTimeout(() => {
+      try {
+        const result = evaluateRoll(rerollFormula, rerollMode, standaloneModifier)
+        setLastResult(result)
+        setIsRolling(false)
+
         addRoll({
           formula: result.formula,
           mode: result.mode,
@@ -285,23 +318,28 @@ export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
           </div>
         </div>
 
-        {/* Right Column: Grand Roll Result Panel (5 cols on Desktop) */}
-        <div className="flex flex-col gap-4 lg:col-span-5">
-          <div className="flex items-center justify-between">
-            <h2 className="font-serif text-lg font-bold tracking-wider text-[#fff8e8]">
-              Roll Outcome
-            </h2>
-            <span className="font-mono text-xs text-[#c7b5d1]">
-              Live Audit Log
-            </span>
+        {/* Right Column: Grand Roll Result Panel & Live Audit Log (5 cols on Desktop) */}
+        <div className="flex flex-col gap-5 lg:col-span-5">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-serif text-lg font-bold tracking-wider text-[#fff8e8]">
+                Roll Outcome
+              </h2>
+              <span className="font-mono text-xs text-[#c7b5d1]">
+                Live Audit Log
+              </span>
+            </div>
+
+            <RollResultPanel
+              result={lastResult}
+              isRolling={isRolling}
+              playerName={activePlayer?.name || 'Adventurer'}
+              sessionName={activeSession?.name || 'Default Session'}
+            />
           </div>
 
-          <RollResultPanel
-            result={lastResult}
-            isRolling={isRolling}
-            playerName={activePlayer?.name || 'Adventurer'}
-            sessionName={activeSession?.name || 'Default Session'}
-          />
+          {/* Session-Scoped Roll Audit Trail */}
+          <RollHistoryList onReroll={handleReroll} />
         </div>
       </div>
 
