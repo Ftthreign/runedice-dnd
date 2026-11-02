@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from 'react'
 import { DiceSelector } from './DiceSelector'
 import { FormulaBar } from './FormulaBar'
@@ -8,24 +10,29 @@ import { ArcaneButton } from '../../../components/ui/ArcaneButton'
 import { evaluateRoll } from '../engine/dice-evaluator'
 import { parseDiceFormula, validateDiceFormula } from '../engine/dice-parser'
 import type { DieType, DiceRollResult, RollMode } from '../types/dice-types'
-import { Dices, RotateCcw } from 'lucide-react'
+import { Dices, RotateCcw, PlusCircle } from 'lucide-react'
+import { useAppState } from '../../app-state/AppStateContext'
+import { SessionModal } from '../../sessions/components/SessionModal'
 
 interface DiceWorkspaceProps {
-  activeSessionName?: string
-  activePlayerName?: string
   onRollComplete?: (result: DiceRollResult) => void
 }
 
-export function DiceWorkspace({
-  activeSessionName = 'The Lost Temple',
-  activePlayerName = 'Fadhil',
-  onRollComplete,
-}: DiceWorkspaceProps) {
+export function DiceWorkspace({ onRollComplete }: DiceWorkspaceProps) {
+  const {
+    state,
+    activeSession,
+    activePlayer,
+    addRoll,
+    createSession,
+  } = useAppState()
+
   const [formula, setFormula] = React.useState<string>('1d20')
   const [mode, setMode] = React.useState<RollMode>('normal')
   const [standaloneModifier, setStandaloneModifier] = React.useState<number>(0)
   const [lastResult, setLastResult] = React.useState<DiceRollResult | null>(null)
   const [isRolling, setIsRolling] = React.useState<boolean>(false)
+  const [isNewSessionModalOpen, setIsNewSessionModalOpen] = React.useState(false)
 
   // Compute dice counts from current formula to highlight in DiceSelector
   const diceCounts = React.useMemo(() => {
@@ -136,12 +143,26 @@ export function DiceWorkspace({
 
     setIsRolling(true)
 
-    // Brief satisfying rolling micro-animation
+    // Brief rolling micro-animation
     setTimeout(() => {
       try {
         const result = evaluateRoll(formula, mode, standaloneModifier)
         setLastResult(result)
         setIsRolling(false)
+
+        // Automatically persist roll to active session
+        addRoll({
+          formula: result.formula,
+          mode: result.mode,
+          allRolls: result.allRolls,
+          diceResults: result.diceResults,
+          diceTotal: result.diceTotal,
+          modifier: result.modifier,
+          total: result.total,
+          isNatural20: result.isNatural20,
+          isNatural1: result.isNatural1,
+        })
+
         if (onRollComplete) {
           onRollComplete(result)
         }
@@ -152,6 +173,43 @@ export function DiceWorkspace({
   }
 
   const isValid = validateDiceFormula(formula).isValid && !!formula.trim()
+
+  // Empty state if user banishes all sessions
+  if (state.sessions.length === 0) {
+    return (
+      <div className="mx-auto max-w-xl py-12 px-4 text-center">
+        <div className="rounded-2xl border border-[#70418a] bg-[#500071]/80 p-8 shadow-[0_12px_32px_rgba(12,0,20,0.85)]">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-[#eee3b0] bg-[#200033] shadow-lg">
+            <Dices className="h-8 w-8 text-[#eee3b0]" />
+          </div>
+          <h2 className="mt-5 font-serif text-2xl font-bold text-[#fff8e8]">
+            No Campaign Inscribed
+          </h2>
+          <p className="mt-2 text-sm text-[#c7b5d1] leading-relaxed">
+            Every adventurer requires a campaign chamber to record rolls, track party turns, and weave their tale.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <ArcaneButton
+              variant="primary"
+              size="lg"
+              onClick={() => setIsNewSessionModalOpen(true)}
+              className="gap-2"
+            >
+              <PlusCircle className="h-5 w-5" />
+              <span>Inscribe Your First Session</span>
+            </ArcaneButton>
+          </div>
+        </div>
+
+        <SessionModal
+          isOpen={isNewSessionModalOpen}
+          mode="create"
+          onClose={() => setIsNewSessionModalOpen(false)}
+          onSubmit={(name) => createSession(name)}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-4 sm:py-6 sm:px-6">
@@ -234,8 +292,8 @@ export function DiceWorkspace({
           <RollResultPanel
             result={lastResult}
             isRolling={isRolling}
-            playerName={activePlayerName}
-            sessionName={activeSessionName}
+            playerName={activePlayer?.name || 'Adventurer'}
+            sessionName={activeSession?.name || 'Default Session'}
           />
         </div>
       </div>

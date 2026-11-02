@@ -7,10 +7,7 @@ export const Route = createFileRoute('/')({ component: HomePage })
 function HomePage() {
   return (
     <WorkspaceShell>
-      <DiceWorkspace
-        activeSessionName="The Lost Temple"
-        activePlayerName="Fadhil"
-      />
+      <DiceWorkspace />
     </WorkspaceShell>
   )
 }
