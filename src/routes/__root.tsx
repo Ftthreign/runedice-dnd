@@ -5,50 +5,15 @@ import { AppStateProvider } from "../features/app-state";
 
 import appCss from "../styles.css?url";
 
-const LazyDevtools = React.lazy(() =>
-  Promise.all([
-    import("@tanstack/react-devtools"),
-    import("@tanstack/react-router-devtools"),
-  ]).then(([devtools, routerDevtools]) => ({
-    default: () => (
-      <devtools.TanStackDevtools
-        config={{
-          position: "bottom-right",
-        }}
-        plugins={[
-          {
-            name: "Tanstack Router",
-            render: <routerDevtools.TanStackRouterDevtoolsPanel />,
-          },
-        ]}
-      />
-    ),
-  }))
-);
-
-function ClientDevtools() {
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted || !import.meta.env.DEV) {
-    return null;
-  }
-
-  return (
-    <React.Suspense fallback={null}>
-      <LazyDevtools />
-    </React.Suspense>
-  );
-}
-
 export const Route = createRootRoute({
   notFoundComponent: () => (
     <div className="flex min-h-[50vh] flex-col items-center justify-center p-6 text-center">
-      <h1 className="font-serif text-3xl font-bold text-parchment-gold">404 - Not Found</h1>
-      <p className="mt-2 text-sm text-text-secondary">The requested chamber does not exist.</p>
+      <h1 className="font-serif text-3xl font-bold text-parchment-gold">
+        404 - Not Found
+      </h1>
+      <p className="mt-2 text-sm text-text-secondary">
+        The requested chamber does not exist.
+      </p>
     </div>
   ),
   head: () => ({
@@ -112,7 +77,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <AppHeader />
           <main className="min-h-[calc(100vh-65px)]">{children}</main>
         </AppStateProvider>
-        <ClientDevtools />
         <Scripts />
       </body>
     </html>
